@@ -1,4 +1,4 @@
-module github.com/auth0-community/go-auth0
+module github.com/pelegn/go-auth0
 
 go 1.15
 
