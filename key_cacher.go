@@ -25,7 +25,7 @@ func JWKKeyID(key *jose.JSONWebKey) string {
 }
 
 func JWKKeyIDWithX5t(key *jose.JSONWebKey) string {
-	return key.KeyID + string(key.CertificateThumbprintSHA1)
+	return key.KeyID //+ string(key.CertificateThumbprintSHA1)
 }
 
 
@@ -37,7 +37,7 @@ func JWTKeyID(token *jwt.JSONWebToken) string {
 
 func JWTKeyIDWithX5t(token *jwt.JSONWebToken) string {
 	header := token.Headers[0]
-	return header.KeyID + string(header.JSONWebKey.CertificateThumbprintSHA1)
+	return header.KeyID //+ string(header.JSONWebKey.CertificateThumbprintSHA1)
 }
 
 
