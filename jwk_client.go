@@ -133,9 +133,9 @@ func (j *JWKClient) GetSecret(r *http.Request) (interface{}, error) {
 		return nil, ErrNoJWTHeaders
 	}
 
-	j.Logger.Info("GET SECRET - ", token)
-	j.Logger.Info("GET SECRET HEADERS - ", token.Headers)
-	j.Logger.Info(fmt.Sprintf("GET SECRET with value - %+v ", token.Headers))
+	//j.Logger.Info("!GET SECRET - ", token)
+	//j.Logger.Info("!GET SECRET HEADERS - ", token.Headers)
+	j.Logger.Info(fmt.Sprintf("!GET SECRET Token- %+v ", token))
 	keyID := j.tokenGetter.JWTGet(token)
 
 	return j.GetKey(keyID)
