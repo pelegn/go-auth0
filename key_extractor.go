@@ -1,6 +1,8 @@
 package auth0
 
 import (
+	b64 "encoding/base64"
+
 	"gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
@@ -17,7 +19,7 @@ func (f KeyGetterFunc) JWKGet(key *jose.JSONWebKey) string {
 }
 
 func DefaultKeyIDGetter(key *jose.JSONWebKey) string {
-	return key.KeyID + string(key.CertificateThumbprintSHA1)
+	return key.KeyID + b64.RawURLEncoding.EncodeToString(key.CertificateThumbprintSHA1)
 }
 
 type TokenIDGetter interface {
