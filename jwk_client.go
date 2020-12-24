@@ -28,12 +28,13 @@ type JWKS struct {
 }
 
 type JWKClient struct {
-	keyCacher KeyCacher
-	mu        sync.Mutex
-	options   JWKClientOptions
-	extractor RequestTokenExtractor
-	keyGetter KeyIDGetter
-	Logger    logging.Logger
+	keyCacher   KeyCacher
+	mu          sync.Mutex
+	options     JWKClientOptions
+	extractor   RequestTokenExtractor
+	keyGetter   KeyIDGetter
+	tokenGetter TokenIDGetter
+	Logger      logging.Logger
 }
 
 // NewJWKClient creates a new JWKClient instance from the
@@ -55,15 +56,18 @@ func NewJWKClientWithCache(options JWKClientOptions, extractor RequestTokenExtra
 	if options.Client == nil {
 		options.Client = http.DefaultClient
 	}
-
+	var keyGetter KeyGetterFunc
+	var tokenGetter TokenIDGetter
 	if getter == nil {
-		getter = KeyGetterFunc(DefaultKeyIDGetter)
+		keyGetter = KeyGetterFunc(DefaultKeyIDGetter)
+		tokenGetter = TokenKeyIDGetterFunc(DefaultTokenKeyIDGetter)
 	}
 	return &JWKClient{
-		keyCacher: keyCacher,
-		options:   options,
-		extractor: extractor,
-		keyGetter: getter,
+		keyCacher:   keyCacher,
+		options:     options,
+		extractor:   extractor,
+		keyGetter:   keyGetter,
+		tokenGetter: tokenGetter,
 	}
 }
 
@@ -132,7 +136,7 @@ func (j *JWKClient) GetSecret(r *http.Request) (interface{}, error) {
 	j.Logger.Info("GET SECRET - ", token)
 	j.Logger.Info("GET SECRET HEADERS - ", token.Headers)
 	j.Logger.Info(fmt.Sprintf("GET SECRET with value - %+v ", token.Headers))
-	keyID := j.keyGetter.JWKGet(token.Headers[0].JSONWebKey)
+	keyID := j.tokenGetter.JWTGet(token)
 
 	return j.GetKey(keyID)
 }
