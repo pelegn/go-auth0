@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/devopsfaith/krakend/logging"
 	"net/http"
 	"strings"
@@ -127,7 +128,10 @@ func (j *JWKClient) GetSecret(r *http.Request) (interface{}, error) {
 	if len(token.Headers) < 1 {
 		return nil, ErrNoJWTHeaders
 	}
+
 	j.Logger.Info("GET SECRET - ", token)
+	j.Logger.Info("GET SECRET HEADERS - ", token.Headers)
+	j.Logger.Info(fmt.Sprintf("GET SECRET with value - %+v ", token.Headers))
 	keyID := j.keyGetter.JWKGet(token.Headers[0].JSONWebKey)
 
 	return j.GetKey(keyID)
