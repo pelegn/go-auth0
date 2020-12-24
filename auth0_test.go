@@ -8,12 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"gopkg.in/square/go-jose.v2"
+	jose "gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 func genTestConfiguration(configuration Configuration, token string) (*JWTValidator, *http.Request) {
-	validator := NewValidator(configuration, nil)
+	validator := NewValidator(configuration, nil, nil)
 
 	req, _ := http.NewRequest("", "http://localhost", nil)
 	authHeader := fmt.Sprintf("Bearer %s", token)

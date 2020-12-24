@@ -1,0 +1,335 @@
+diff --git a/auth0.go b/auth0.go
+index 95155ca..aa38fd7 100755
+--- a/auth0.go
++++ b/auth0.go
+@@ -5,7 +5,7 @@ import (
+ 	"net/http"
+ 	"time"
+ 
+-	"gopkg.in/square/go-jose.v2"
++	jose "gopkg.in/square/go-jose.v2"
+ 	"gopkg.in/square/go-jose.v2/jwt"
+ )
+ 
+@@ -148,4 +148,4 @@ func (v *JWTValidator) Claims(token *jwt.JSONWebToken, values ...interface{}) er
+ 		return err
+ 	}
+ 	return token.Claims(key, values...)
+-}
+\ No newline at end of file
++}
+diff --git a/auth0_test.go b/auth0_test.go
+index 2005c3a..6a06ae7 100755
+--- a/auth0_test.go
++++ b/auth0_test.go
+@@ -8,7 +8,7 @@ import (
+ 	"testing"
+ 	"time"
+ 
+-	"gopkg.in/square/go-jose.v2"
++	jose "gopkg.in/square/go-jose.v2"
+ 	"gopkg.in/square/go-jose.v2/jwt"
+ )
+ 
+diff --git a/example/go.sum b/example/go.sum
+index 2d7fdfe..5f01f49 100644
+--- a/example/go.sum
++++ b/example/go.sum
+@@ -23,8 +23,6 @@ golang.org/x/crypto v0.0.0-20180802221240-56440b844dfe/go.mod h1:6SG95UA2DQfeDnf
+ gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+ gopkg.in/go-playground/validator.v8 v8.18.2 h1:lFB4DoMU6B626w8ny76MV7VX6W2VHct2GVOI3xgiMrQ=
+ gopkg.in/go-playground/validator.v8 v8.18.2/go.mod h1:RX2a/7Ha8BgOhfk7j780h4/u/RRjR0eouCJSH80/M2Y=
+-gopkg.in/square/go-jose.v2 v2.1.7 h1:4m8fIwX7Xdw2WlFiPJtcVCDX6ELrIdpHnRmE6Uqmktk=
+-gopkg.in/square/go-jose.v2 v2.1.7/go.mod h1:M9dMgbHiYLoDGQrXy7OpJDJWiKiU//h+vD76mk0e1AI=
+ gopkg.in/yaml.v2 v2.2.1 h1:mUhvW9EsL+naU5Q3cakzfE91YhliOondGd6ZrsDBHQE=
+ gopkg.in/yaml.v2 v2.2.1/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
+ gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
+diff --git a/go.mod b/go.mod
+index 1532bc6..cba5065 100644
+--- a/go.mod
++++ b/go.mod
+@@ -1,9 +1,10 @@
+ module github.com/auth0-community/go-auth0
+ 
+ require (
+-	github.com/stretchr/testify v1.4.0
+-	golang.org/x/crypto v0.0.0-20180802221240-56440b844dfe // indirect
+-	gopkg.in/square/go-jose.v2 v2.1.7
++	github.com/google/go-cmp v0.5.3 // indirect
++	github.com/stretchr/testify v1.6.1
++	golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9 // indirect
++	gopkg.in/square/go-jose.v2 v2.5.1
+ )
+ 
+ go 1.13
+diff --git a/go.sum b/go.sum
+index 499710e..e32876d 100644
+--- a/go.sum
++++ b/go.sum
+@@ -1,14 +1,26 @@
+ github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
+ github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
++github.com/google/go-cmp v0.5.3 h1:x95R7cp+rSeeqAMI2knLtQ0DKlaBhv2NrtrOvafPHRo=
++github.com/google/go-cmp v0.5.3/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
+ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+ github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
+-github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
+-github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
+-golang.org/x/crypto v0.0.0-20180802221240-56440b844dfe h1:APBCFlxGVQi3YDSHtTbNXRZhDEuz9rrnVPXZA4YbUx8=
+-golang.org/x/crypto v0.0.0-20180802221240-56440b844dfe/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
++github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
++github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
++golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
++golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9 h1:umElSU9WZirRdgu2yFHY0ayQkEnKiOC1TtM3fWXFnoU=
++golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
++golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
++golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
++golang.org/x/sys v0.0.0-20190412213103-97732733099d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
++golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
++golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=
++golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
++gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
+ gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+-gopkg.in/square/go-jose.v2 v2.1.7 h1:4m8fIwX7Xdw2WlFiPJtcVCDX6ELrIdpHnRmE6Uqmktk=
+-gopkg.in/square/go-jose.v2 v2.1.7/go.mod h1:M9dMgbHiYLoDGQrXy7OpJDJWiKiU//h+vD76mk0e1AI=
+-gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
+-gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
++gopkg.in/go-jose/go-jose.v2 v2.5.1 h1:zibt3V+QTwvdQLO4e/g4UAcIjIC0G+mVOFX1JhAwhKk=
++gopkg.in/go-jose/go-jose.v2 v2.5.1/go.mod h1:zzZDPkNNw/c9IE7Z9jr11mBZQhKQTMzoEEIoEdZlFBI=
++gopkg.in/square/go-jose.v2 v2.5.1 h1:7odma5RETjNHWJnR32wx8t+Io4djHE1PqxCFx3iiZ2w=
++gopkg.in/square/go-jose.v2 v2.5.1/go.mod h1:M9dMgbHiYLoDGQrXy7OpJDJWiKiU//h+vD76mk0e1AI=
++gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c h1:dUUwHk2QECo/6vqA44rthZ8ie2QXMNeKRTHCNY2nXvo=
++gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
+diff --git a/jwk_client.go b/jwk_client.go
+index b0f026d..1f2d11a 100755
+--- a/jwk_client.go
++++ b/jwk_client.go
+@@ -4,12 +4,12 @@ import (
+ 	"bytes"
+ 	"encoding/json"
+ 	"errors"
+-	"gopkg.in/square/go-jose.v2/jwt"
+ 	"net/http"
+ 	"strings"
+ 	"sync"
+ 
+-	"gopkg.in/square/go-jose.v2"
++	jose "gopkg.in/square/go-jose.v2"
++	"gopkg.in/square/go-jose.v2/jwt"
+ )
+ 
+ var (
+@@ -20,6 +20,7 @@ var (
+ type JWKClientOptions struct {
+ 	URI    string
+ 	Client *http.Client
++	UseX5t bool
+ }
+ 
+ type JWKS struct {
+@@ -72,7 +73,15 @@ func (j *JWKClient) GetKey(ID string) (jose.JSONWebKey, error) {
+ 		if err != nil {
+ 			return jose.JSONWebKey{}, err
+ 		}
+-		addedKey, err := j.keyCacher.Add(ID, keys)
++
++		var fn FnJWKKeyID
++		if j.options.UseX5t {
++			fn = JWKKeyIDWithX5t
++		} else {
++			fn = JWKKeyID
++		}
++
++		addedKey, err := j.keyCacher.AddWithKeyFn(ID, fn, keys)
+ 		if err != nil {
+ 			return jose.JSONWebKey{}, err
+ 		}
+@@ -119,7 +128,11 @@ func (j *JWKClient) GetSecret(token *jwt.JSONWebToken) (interface{}, error) {
+ 		return nil, ErrNoJWTHeaders
+ 	}
+ 
+-	header := token.Headers[0]
+-
+-	return j.GetKey(header.KeyID)
++	var keyID string
++	if j.options.UseX5t {
++		keyID = JWTKeyIDWithX5t(token)
++	} else {
++		keyID = JWTKeyID(token)
++	}
++	return j.GetKey(keyID)
+ }
+diff --git a/jwk_client_test.go b/jwk_client_test.go
+index e49184c..47aeae6 100755
+--- a/jwk_client_test.go
++++ b/jwk_client_test.go
+@@ -3,7 +3,6 @@ package auth0
+ import (
+ 	"errors"
+ 	"fmt"
+-	"gopkg.in/square/go-jose.v2/jwt"
+ 	"net/http"
+ 	"net/http/httptest"
+ 	"strings"
+@@ -11,8 +10,10 @@ import (
+ 	"testing"
+ 	"time"
+ 
++	jose "gopkg.in/square/go-jose.v2"
++	"gopkg.in/square/go-jose.v2/jwt"
++
+ 	"github.com/stretchr/testify/assert"
+-	"gopkg.in/square/go-jose.v2"
+ )
+ 
+ type mockKeyCacher struct {
+@@ -39,6 +40,10 @@ func (mockKC *mockKeyCacher) Get(keyID string) (*jose.JSONWebKey, error) {
+ }
+ 
+ func (mockKC *mockKeyCacher) Add(keyID string, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
++	return mockKC.AddWithKeyFn(keyID, JWKKeyID, webKeys)
++}
++
++func (mockKC *mockKeyCacher) AddWithKeyFn(keyID string, fn FnJWKKeyID, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
+ 	if mockKC.addError == nil {
+ 		mockKey := jose.JSONWebKey{Use: "testAdd"}
+ 		mockKey.KeyID = mockKC.keyID
+@@ -178,7 +183,7 @@ func TestGetKeyOfJWKClient(t *testing.T) {
+ 				ErrNoKeyFound,
+ 				"key1",
+ 			),
+-			expectedErrorMsg: "no Keys has been found",
++			expectedErrorMsg: string(ErrNoKeyFound.Error()),
+ 		},
+ 	}
+ 
+diff --git a/key_cacher.go b/key_cacher.go
+index 9d23633..6b2b690 100644
+--- a/key_cacher.go
++++ b/key_cacher.go
+@@ -5,6 +5,7 @@ import (
+ 	"time"
+ 
+ 	jose "gopkg.in/square/go-jose.v2"
++	"gopkg.in/square/go-jose.v2/jwt"
+ )
+ 
+ var (
+@@ -17,9 +18,32 @@ var (
+ 	MaxCacheSizeNoCheck = -1
+ )
+ 
++type FnJWKKeyID func(*jose.JSONWebKey) string
++
++func JWKKeyID(key *jose.JSONWebKey) string {
++	return key.KeyID
++}
++
++func JWKKeyIDWithX5t(key *jose.JSONWebKey) string {
++	return key.KeyID + string(key.CertificateThumbprintSHA1)
++}
++
++type FnJWTKeyID func(*jwt.JSONWebToken) string
++
++func JWTKeyID(token *jwt.JSONWebToken) string {
++	header := token.Headers[0]
++	return header.KeyID
++}
++
++func JWTKeyIDWithX5t(token *jwt.JSONWebToken) string {
++	header := token.Headers[0]
++	return header.KeyID + string(header.JSONWebKey.CertificateThumbprintSHA1)
++}
++
+ type KeyCacher interface {
+ 	Get(keyID string) (*jose.JSONWebKey, error)
+ 	Add(keyID string, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error)
++	AddWithKeyFn(keyID string, fn FnJWKKeyID, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error)
+ }
+ 
+ type memoryKeyCacher struct {
+@@ -65,13 +89,19 @@ func (mkc *memoryKeyCacher) Get(keyID string) (*jose.JSONWebKey, error) {
+ 
+ // Add adds a key into the cache and handles overflow
+ func (mkc *memoryKeyCacher) Add(keyID string, downloadedKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
++	return mkc.AddWithKeyFn(keyID, JWKKeyID, downloadedKeys)
++}
++
++// Add adds a key into the cache and handles overflow, allowing a custom cache-key fn
++func (mkc *memoryKeyCacher) AddWithKeyFn(keyID string, fn FnJWKKeyID, downloadedKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
+ 	var addingKey jose.JSONWebKey
+ 
+ 	for _, key := range downloadedKeys {
+-		if key.KeyID == keyID {
++		cacheKey := fn(&key)
++		if cacheKey == keyID {
+ 			addingKey = key
+ 		}
+-		if mkc.maxCacheSize == -1 {
++		if mkc.maxCacheSize == MaxCacheSizeNoCheck {
+ 			mkc.entries[key.KeyID] = keyCacherEntry{
+ 				addedAt:    time.Now(),
+ 				JSONWebKey: key,
+@@ -80,7 +110,8 @@ func (mkc *memoryKeyCacher) Add(keyID string, downloadedKeys []jose.JSONWebKey)
+ 	}
+ 	if addingKey.Key != nil {
+ 		if mkc.maxCacheSize != -1 {
+-			mkc.entries[addingKey.KeyID] = keyCacherEntry{
++			cacheKey := fn(&addingKey)
++			mkc.entries[cacheKey] = keyCacherEntry{
+ 				addedAt:    time.Now(),
+ 				JSONWebKey: addingKey,
+ 			}
+diff --git a/key_cacher_test.go b/key_cacher_test.go
+index 3a8d265..038c719 100644
+--- a/key_cacher_test.go
++++ b/key_cacher_test.go
+@@ -8,7 +8,7 @@ import (
+ 
+ 	"github.com/stretchr/testify/assert"
+ 
+-	"gopkg.in/square/go-jose.v2"
++	jose "gopkg.in/square/go-jose.v2"
+ )
+ 
+ func TestGet(t *testing.T) {
+@@ -189,7 +189,7 @@ func TestAdd(t *testing.T) {
+ 			addingKey:        "invalid key",
+ 			gettingKey:       "invalid key",
+ 			expectedFoundKey: false,
+-			expectedErrorMsg: "no Keys has been found",
++			expectedErrorMsg: string(ErrNoKeyFound.Error()),
+ 		},
+ 		{
+ 			name: "pass - add key for persistent cacher",
+@@ -296,7 +296,7 @@ func TestAdd(t *testing.T) {
+ 			addingKey:        "invalid key",
+ 			gettingKey:       "test1",
+ 			expectedFoundKey: false,
+-			expectedErrorMsg: "no Keys has been found",
++			expectedErrorMsg: string(ErrNoKeyFound.Error()),
+ 		},
+ 		{
+ 			name: "fail - custom cacher get key not in cache",
+@@ -389,6 +389,7 @@ func TestKeyIsExpired(t *testing.T) {
+ 	}
+ }
+ 
++// TODO: add overflow test for AddMulti
+ func TestHandleOverflow(t *testing.T) {
+ 	downloadedKeys := []jose.JSONWebKey{{KeyID: "test1"}, {KeyID: "test2"}, {KeyID: "test3"}}
+ 
+diff --git a/token_extraction_test.go b/token_extraction_test.go
+index 217a1ad..29451dd 100644
+--- a/token_extraction_test.go
++++ b/token_extraction_test.go
+@@ -8,7 +8,7 @@ import (
+ 	"testing"
+ 	"time"
+ 
+-	"gopkg.in/square/go-jose.v2"
++	jose "gopkg.in/square/go-jose.v2"
+ 	"gopkg.in/square/go-jose.v2/jwt"
+ )
+ 

@@ -3,7 +3,6 @@ package auth0
 import (
 	"errors"
 	"fmt"
-	"gopkg.in/square/go-jose.v2/jwt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -11,8 +10,10 @@ import (
 	"testing"
 	"time"
 
+	jose "gopkg.in/square/go-jose.v2"
+	"gopkg.in/square/go-jose.v2/jwt"
+
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/square/go-jose.v2"
 )
 
 type mockKeyCacher struct {
@@ -39,6 +40,10 @@ func (mockKC *mockKeyCacher) Get(keyID string) (*jose.JSONWebKey, error) {
 }
 
 func (mockKC *mockKeyCacher) Add(keyID string, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
+	return mockKC.AddWithKeyFn(keyID, JWKKeyID, webKeys)
+}
+
+func (mockKC *mockKeyCacher) AddWithKeyFn(keyID string, fn FnJWKKeyID, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
 	if mockKC.addError == nil {
 		mockKey := jose.JSONWebKey{Use: "testAdd"}
 		mockKey.KeyID = mockKC.keyID
@@ -178,13 +183,13 @@ func TestGetKeyOfJWKClient(t *testing.T) {
 				ErrNoKeyFound,
 				"key1",
 			),
-			expectedErrorMsg: "no Keys has been found",
+			expectedErrorMsg: string(ErrNoKeyFound.Error()),
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := NewJWKClientWithCache(opts, nil, test.mkc)
+			client := NewJWKClientWithCache(opts, nil, test.mkc, nil)
 			_, err := client.GetKey("key1")
 			if test.expectedErrorMsg != "" {
 				if err == nil {
@@ -224,7 +229,7 @@ func TestCreateJWKClientCustomCacher(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := NewJWKClientWithCache(opts, nil, test.keyCacher)
+			client := NewJWKClientWithCache(opts, nil, test.keyCacher, nil)
 			assert.NotEmpty(t, client.keyCacher)
 		})
 	}
