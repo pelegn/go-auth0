@@ -5,8 +5,6 @@ import (
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
-
-
 type KeyIDGetter interface {
 	JWKGet(*jose.JSONWebKey) string
 }
@@ -19,7 +17,7 @@ func (f KeyGetterFunc) JWKGet(key *jose.JSONWebKey) string {
 }
 
 func DefaultKeyIDGetter(key *jose.JSONWebKey) string {
-	return key.KeyID
+	return key.KeyID + key.CertificateThumbprintSHA1
 }
 
 type TokenIDGetter interface {
@@ -35,7 +33,7 @@ func (f TokenKeyIDGetterFunc) JWTGet(token *jwt.JSONWebToken) string {
 
 func DefaultTokenKeyIDGetter(token *jwt.JSONWebToken) string {
 	x5t, ok := token.Headers[0].ExtraHeaders["x5t"].(string)
-	if !ok{
+	if !ok {
 		return token.Headers[0].KeyID
 	}
 	return token.Headers[0].KeyID + x5t
