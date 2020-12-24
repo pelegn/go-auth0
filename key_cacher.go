@@ -2,6 +2,7 @@ package auth0
 
 import (
 	"errors"
+	"github.com/devopsfaith/krakend/logging"
 	"gopkg.in/square/go-jose.v2/jwt"
 	"time"
 
@@ -51,6 +52,7 @@ type memoryKeyCacher struct {
 	entries      map[string]keyCacherEntry
 	maxKeyAge    time.Duration
 	maxCacheSize int
+	logger logging.Logger
 }
 
 type keyCacherEntry struct {

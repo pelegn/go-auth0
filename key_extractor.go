@@ -34,5 +34,9 @@ func (f TokenKeyIDGetterFunc) JWTGet(token *jwt.JSONWebToken) string {
 }
 
 func DefaultTokenKeyIDGetter(token *jwt.JSONWebToken) string {
-	return token.Headers[0].KeyID
+	x5t, ok := token.Headers[0].ExtraHeaders["x5t"].(string)
+	if !ok{
+		return token.Headers[0].KeyID
+	}
+	return token.Headers[0].KeyID + x5t
 }

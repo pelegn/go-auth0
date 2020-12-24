@@ -82,6 +82,10 @@ func (j *JWKClient) GetKey(ID string) (jose.JSONWebKey, error) {
 		if err != nil {
 			return jose.JSONWebKey{}, err
 		}
+		j.Logger.Info("Keys:")
+		for _, k := range keys {
+			j.Logger.Info(fmt.Sprintf("%#v", k))
+		}
 		addedKey, err := j.keyCacher.AddWithKeyGetter(ID, j.keyGetter, keys)
 		if err != nil {
 			return jose.JSONWebKey{}, err
@@ -133,8 +137,6 @@ func (j *JWKClient) GetSecret(r *http.Request) (interface{}, error) {
 		return nil, ErrNoJWTHeaders
 	}
 
-	//j.Logger.Info("!GET SECRET - ", token)
-	//j.Logger.Info("!GET SECRET HEADERS - ", token.Headers)
 	j.Logger.Info(fmt.Sprintf("!GET SECRET Token- %+v ", token))
 	keyID := j.tokenGetter.JWTGet(token)
 
