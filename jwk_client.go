@@ -32,7 +32,7 @@ type JWKClient struct {
 	options   JWKClientOptions
 	extractor RequestTokenExtractor
 	keyGetter KeyIDGetter
-	logger    logging.Logger
+	Logger    logging.Logger
 }
 
 // NewJWKClient creates a new JWKClient instance from the
@@ -127,7 +127,7 @@ func (j *JWKClient) GetSecret(r *http.Request) (interface{}, error) {
 	if len(token.Headers) < 1 {
 		return nil, ErrNoJWTHeaders
 	}
-	j.logger.Info("GET SECRET - ", token)
+	j.Logger.Info("GET SECRET - ", token)
 	keyID := j.keyGetter.JWKGet(token.Headers[0].JSONWebKey)
 
 	return j.GetKey(keyID)
