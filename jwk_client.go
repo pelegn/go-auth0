@@ -84,10 +84,8 @@ func (j *JWKClient) GetKey(ID string) (jose.JSONWebKey, error) {
 		}
 		j.Logger.Info("Keys:")
 		for _, k := range keys {
-			j.Logger.Info(fmt.Sprintf("%+v", k))
-			for _, cert := range k.Certificates{
-				j.Logger.Info(fmt.Sprintf("\t%+v", *cert))
-			}
+			j.Logger.Info(fmt.Sprintf("%T %+v", k, k))
+
 		}
 		addedKey, err := j.keyCacher.AddWithKeyGetter(ID, j.keyGetter, keys)
 		if err != nil {
