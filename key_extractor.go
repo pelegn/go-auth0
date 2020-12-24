@@ -17,7 +17,7 @@ func (f KeyGetterFunc) JWKGet(key *jose.JSONWebKey) string {
 }
 
 func DefaultKeyIDGetter(key *jose.JSONWebKey) string {
-	return key.KeyID + key.CertificateThumbprintSHA1
+	return key.KeyID + string(key.CertificateThumbprintSHA1)
 }
 
 type TokenIDGetter interface {
