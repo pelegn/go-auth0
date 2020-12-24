@@ -75,7 +75,7 @@ func NewJWKClientWithCache(options JWKClientOptions, extractor RequestTokenExtra
 func (j *JWKClient) GetKey(ID string) (jose.JSONWebKey, error) {
 	j.mu.Lock()
 	defer j.mu.Unlock()
-
+	j.Logger.Info(fmt.Sprintf("looking for id %s", ID))
 	searchedKey, err := j.keyCacher.Get(ID)
 	if err != nil {
 		keys, err := j.downloadKeys()
@@ -87,7 +87,7 @@ func (j *JWKClient) GetKey(ID string) (jose.JSONWebKey, error) {
 			j.Logger.Info(fmt.Sprintf("%T %+v", k, k))
 
 		}
-		addedKey, err := j.keyCacher.AddWithKeyGetter(ID, j.keyGetter, keys)
+		addedKey, err := j.keyCacher.AddWithKeyGetter(ID, j.keyGetter, keys, j.Logger)
 		if err != nil {
 			return jose.JSONWebKey{}, err
 		}
