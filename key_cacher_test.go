@@ -189,7 +189,7 @@ func TestAdd(t *testing.T) {
 			addingKey:        "invalid key",
 			gettingKey:       "invalid key",
 			expectedFoundKey: false,
-			expectedErrorMsg: "no Keys has been found",
+			expectedErrorMsg: string(ErrNoKeyFound.Error()),
 		},
 		{
 			name: "pass - add key for persistent cacher",
@@ -296,7 +296,7 @@ func TestAdd(t *testing.T) {
 			addingKey:        "invalid key",
 			gettingKey:       "test1",
 			expectedFoundKey: false,
-			expectedErrorMsg: "no Keys has been found",
+			expectedErrorMsg: string(ErrNoKeyFound.Error()),
 		},
 		{
 			name: "fail - custom cacher get key not in cache",

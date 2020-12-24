@@ -2,6 +2,7 @@ package auth0
 
 import (
 	"errors"
+	"gopkg.in/square/go-jose.v2/jwt"
 	"time"
 
 	jose "gopkg.in/square/go-jose.v2"
@@ -17,9 +18,33 @@ var (
 	MaxCacheSizeNoCheck = -1
 )
 
+type FnJWKKeyID func(*jose.JSONWebKey) string
+
+func JWKKeyID(key *jose.JSONWebKey) string {
+	return key.KeyID
+}
+
+func JWKKeyIDWithX5t(key *jose.JSONWebKey) string {
+	return key.KeyID + string(key.CertificateThumbprintSHA1)
+}
+
+
+
+func JWTKeyID(token *jwt.JSONWebToken) string {
+	header := token.Headers[0]
+	return header.KeyID
+}
+
+func JWTKeyIDWithX5t(token *jwt.JSONWebToken) string {
+	header := token.Headers[0]
+	return header.KeyID + string(header.JSONWebKey.CertificateThumbprintSHA1)
+}
+
+
 type KeyCacher interface {
 	Get(keyID string) (*jose.JSONWebKey, error)
 	Add(keyID string, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error)
+	AddWithKeyGetter(keyID string, keyGetter KeyIDGetter, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error)
 }
 
 type memoryKeyCacher struct {
@@ -65,10 +90,16 @@ func (mkc *memoryKeyCacher) Get(keyID string) (*jose.JSONWebKey, error) {
 
 // Add adds a key into the cache and handles overflow
 func (mkc *memoryKeyCacher) Add(keyID string, downloadedKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
+	return mkc.AddWithKeyGetter(keyID, KeyGetterFunc(DefaultKeyIDGetter), downloadedKeys)
+}
+
+// Add adds a key into the cache and handles overflow, allowing a custom cache-key fn
+func (mkc *memoryKeyCacher) AddWithKeyGetter(keyID string, keyGetter KeyIDGetter, downloadedKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
 	var addingKey jose.JSONWebKey
 
 	for _, key := range downloadedKeys {
-		if key.KeyID == keyID {
+		cacheKey := keyGetter.JWKGet(&key)
+		if cacheKey == keyID {
 			addingKey = key
 		}
 		if mkc.maxCacheSize == -1 {
@@ -80,7 +111,8 @@ func (mkc *memoryKeyCacher) Add(keyID string, downloadedKeys []jose.JSONWebKey) 
 	}
 	if addingKey.Key != nil {
 		if mkc.maxCacheSize != -1 {
-			mkc.entries[addingKey.KeyID] = keyCacherEntry{
+			cacheKey := keyGetter.JWKGet(&addingKey)
+			mkc.entries[cacheKey] = keyCacherEntry{
 				addedAt:    time.Now(),
 				JSONWebKey: addingKey,
 			}
