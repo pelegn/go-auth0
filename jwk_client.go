@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"github.com/devopsfaith/krakend/logging"
 	"net/http"
 	"strings"
 	"sync"
@@ -31,6 +32,7 @@ type JWKClient struct {
 	options   JWKClientOptions
 	extractor RequestTokenExtractor
 	keyGetter KeyIDGetter
+	logger    logging.Logger
 }
 
 // NewJWKClient creates a new JWKClient instance from the
@@ -53,7 +55,7 @@ func NewJWKClientWithCache(options JWKClientOptions, extractor RequestTokenExtra
 		options.Client = http.DefaultClient
 	}
 
-	if getter == nil{
+	if getter == nil {
 		getter = KeyGetterFunc(DefaultKeyIDGetter)
 	}
 	return &JWKClient{
@@ -125,7 +127,7 @@ func (j *JWKClient) GetSecret(r *http.Request) (interface{}, error) {
 	if len(token.Headers) < 1 {
 		return nil, ErrNoJWTHeaders
 	}
-
+	j.logger.Info("GET SECRET - ", token)
 	keyID := j.keyGetter.JWKGet(token.Headers[0].JSONWebKey)
 
 	return j.GetKey(keyID)

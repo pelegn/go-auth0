@@ -68,6 +68,7 @@ func NewConfigurationTrustProvider(provider SecretProvider, audience []string, i
 type JWTValidator struct {
 	config    Configuration
 	extractor RequestTokenExtractor
+	logger logging.Logger
 }
 
 // NewValidator creates a new
@@ -80,7 +81,7 @@ func NewValidator(config Configuration, extractor RequestTokenExtractor, logger1
 	if logger1 != nil {
 		logger1.Info("NETA: starting my own validator")
 	}
-	return &JWTValidator{config, extractor}
+	return &JWTValidator{config, extractor, logger1}
 }
 
 // ValidateRequest validates the token within
