@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"github.com/devopsfaith/krakend/logging"
 	"net/http"
 	"strings"
 	"sync"
@@ -19,8 +17,10 @@ var (
 )
 
 type JWKClientOptions struct {
-	URI    string
-	Client *http.Client
+	URI           string
+	Client        *http.Client
+	KeyIDGetter   KeyIDGetter
+	TokenIDGetter TokenIDGetter
 }
 
 type JWKS struct {
@@ -32,21 +32,18 @@ type JWKClient struct {
 	mu          sync.Mutex
 	options     JWKClientOptions
 	extractor   RequestTokenExtractor
-	keyGetter   KeyIDGetter
-	tokenGetter TokenIDGetter
-	Logger      logging.Logger
 }
 
 // NewJWKClient creates a new JWKClient instance from the
 // provided options.
 func NewJWKClient(options JWKClientOptions, extractor RequestTokenExtractor) *JWKClient {
-	return NewJWKClientWithCache(options, extractor, nil, nil)
+	return NewJWKClientWithCache(options, extractor, nil)
 }
 
 // NewJWKClientWithCache creates a new JWKClient instance from the
 // provided options and a custom keycacher interface.
 // Passing nil to keyCacher will create a persistent key cacher
-func NewJWKClientWithCache(options JWKClientOptions, extractor RequestTokenExtractor, keyCacher KeyCacher, getter KeyIDGetter) *JWKClient {
+func NewJWKClientWithCache(options JWKClientOptions, extractor RequestTokenExtractor, keyCacher KeyCacher) *JWKClient {
 	if extractor == nil {
 		extractor = RequestTokenExtractorFunc(FromHeader)
 	}
@@ -56,18 +53,18 @@ func NewJWKClientWithCache(options JWKClientOptions, extractor RequestTokenExtra
 	if options.Client == nil {
 		options.Client = http.DefaultClient
 	}
-	var keyGetter KeyGetterFunc
-	var tokenGetter TokenIDGetter
-	if getter == nil {
-		keyGetter = KeyGetterFunc(DefaultKeyIDGetter)
-		tokenGetter = TokenKeyIDGetterFunc(DefaultTokenKeyIDGetter)
+	if options.KeyIDGetter == nil {
+		options.KeyIDGetter = KeyGetterFunc(DefaultKeyIDGetter)
+
 	}
+	if options.TokenIDGetter == nil{
+		options.TokenIDGetter = TokenKeyIDGetterFunc(DefaultTokenKeyIDGetter)
+	}
+
 	return &JWKClient{
 		keyCacher:   keyCacher,
 		options:     options,
 		extractor:   extractor,
-		keyGetter:   keyGetter,
-		tokenGetter: tokenGetter,
 	}
 }
 
@@ -75,19 +72,13 @@ func NewJWKClientWithCache(options JWKClientOptions, extractor RequestTokenExtra
 func (j *JWKClient) GetKey(ID string) (jose.JSONWebKey, error) {
 	j.mu.Lock()
 	defer j.mu.Unlock()
-	j.Logger.Info(fmt.Sprintf("looking for id %s", ID))
 	searchedKey, err := j.keyCacher.Get(ID)
 	if err != nil {
 		keys, err := j.downloadKeys()
 		if err != nil {
 			return jose.JSONWebKey{}, err
 		}
-		j.Logger.Info("Keys:")
-		for _, k := range keys {
-			j.Logger.Info(fmt.Sprintf("%T %+v", k, k))
-
-		}
-		addedKey, err := j.keyCacher.AddWithKeyGetter(ID, j.keyGetter, keys, j.Logger)
+		addedKey, err := j.keyCacher.AddWithKeyGetter(ID, j.options.KeyIDGetter, keys)
 		if err != nil {
 			return jose.JSONWebKey{}, err
 		}
@@ -138,8 +129,7 @@ func (j *JWKClient) GetSecret(r *http.Request) (interface{}, error) {
 		return nil, ErrNoJWTHeaders
 	}
 
-	j.Logger.Info(fmt.Sprintf("!GET SECRET Token- %+v ", token))
-	keyID := j.tokenGetter.JWTGet(token)
+	keyID := j.options.TokenIDGetter.JWTGet(token)
 
 	return j.GetKey(keyID)
 }
