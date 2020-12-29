@@ -97,12 +97,14 @@ func (mkc *memoryKeyCacher) Add(keyID string, downloadedKeys []jose.JSONWebKey) 
 // Add adds a key into the cache and handles overflow, allowing a custom cache-key fn
 func (mkc *memoryKeyCacher) AddWithKeyGetter(keyID string, keyGetter KeyIDGetter, downloadedKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
 	var addingKey jose.JSONWebKey
+	var addingKeyID string
 	fmt.Println("AUTH0 - adding key", keyID)
 	for _, key := range downloadedKeys {
 		cacheKey := keyGetter.JWKGet(&key)
 
 		if cacheKey == keyID {
 			addingKey = key
+			addingKeyID = cacheKey
 		}
 		fmt.Println("cache size - ", mkc.maxCacheSize)
 		if mkc.maxCacheSize == -1 {
@@ -114,8 +116,7 @@ func (mkc *memoryKeyCacher) AddWithKeyGetter(keyID string, keyGetter KeyIDGetter
 	}
 	if addingKey.Key != nil {
 		if mkc.maxCacheSize != -1 {
-			cacheKey := keyGetter.JWKGet(&addingKey)
-			mkc.entries[cacheKey] = keyCacherEntry{
+			mkc.entries[addingKeyID] = keyCacherEntry{
 				addedAt:    time.Now(),
 				JSONWebKey: addingKey,
 			}
