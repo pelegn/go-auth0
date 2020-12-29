@@ -39,7 +39,7 @@ func (mockKC *mockKeyCacher) Get(keyID string) (*jose.JSONWebKey, error) {
 
 func (mockKC *mockKeyCacher) Add(keyID string, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
 
-	return mockKC.AddWithKeyGetter(keyID, KeyGetterFunc(DefaultKeyIDGetter), webKeys)
+	return mockKC.AddWithKeyGetter(keyID, KeyIDGetterFunc(DefaultKeyIDGetter), webKeys)
 }
 
 func (mockKC *mockKeyCacher) AddWithKeyGetter(keyID string, keyGetter KeyIDGetter, webKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {

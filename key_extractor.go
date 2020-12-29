@@ -11,11 +11,11 @@ type KeyIDGetter interface {
 	JWKGet(*jose.JSONWebKey) string
 }
 
-//KeyGetterFunc function conforming to the KeyIDGetter interface.
-type KeyGetterFunc func(*jose.JSONWebKey) string
+//KeyIDGetterFunc function conforming to the KeyIDGetter interface.
+type KeyIDGetterFunc func(*jose.JSONWebKey) string
 
 // Extract calls f(r)
-func (f KeyGetterFunc) JWKGet(key *jose.JSONWebKey) string {
+func (f KeyIDGetterFunc) JWKGet(key *jose.JSONWebKey) string {
 	return f(key)
 }
 

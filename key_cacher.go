@@ -89,7 +89,7 @@ func (mkc *memoryKeyCacher) Get(keyID string) (*jose.JSONWebKey, error) {
 
 // Add adds a key into the cache and handles overflow
 func (mkc *memoryKeyCacher) Add(keyID string, downloadedKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
-	return mkc.AddWithKeyGetter(keyID, KeyGetterFunc(DefaultKeyIDGetter), downloadedKeys)
+	return mkc.AddWithKeyGetter(keyID, KeyIDGetterFunc(DefaultKeyIDGetter), downloadedKeys)
 }
 
 // Add adds a key into the cache and handles overflow, allowing a custom cache-key fn

@@ -54,7 +54,7 @@ func NewJWKClientWithCache(options JWKClientOptions, extractor RequestTokenExtra
 		options.Client = http.DefaultClient
 	}
 	if options.KeyIDGetter == nil {
-		options.KeyIDGetter = KeyGetterFunc(DefaultKeyIDGetter)
+		options.KeyIDGetter = KeyIDGetterFunc(DefaultKeyIDGetter)
 
 	}
 	if options.TokenIDGetter == nil{
