@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 
 	"gopkg.in/square/go-jose.v2"
 )
@@ -130,8 +131,11 @@ func (j *JWKClient) GetSecret(r *http.Request) (interface{}, error) {
 	if len(token.Headers) < 1 {
 		return nil, ErrNoJWTHeaders
 	}
-
+	start := time.Now()
 	keyID := j.options.TokenIDGetter.JWTGet(token)
-	fmt.Println("GetSecret - ", keyID)
-	return j.GetKey(keyID)
+	ret, err := j.GetKey(keyID)
+	elapsed := time.Since(start)
+	fmt.Println("Get secret time - ", elapsed)
+
+	return ret, err
 }
