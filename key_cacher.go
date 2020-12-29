@@ -2,6 +2,7 @@ package auth0
 
 import (
 	"errors"
+	"fmt"
 	"github.com/devopsfaith/krakend/logging"
 	"gopkg.in/square/go-jose.v2/jwt"
 	"time"
@@ -95,7 +96,7 @@ func (mkc *memoryKeyCacher) Add(keyID string, downloadedKeys []jose.JSONWebKey) 
 // Add adds a key into the cache and handles overflow, allowing a custom cache-key fn
 func (mkc *memoryKeyCacher) AddWithKeyGetter(keyID string, keyGetter KeyIDGetter, downloadedKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
 	var addingKey jose.JSONWebKey
-
+	fmt.Println("AUTH0 - adding key", keyID)
 	for _, key := range downloadedKeys {
 		cacheKey := keyGetter.JWKGet(&key)
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"sync"
@@ -89,6 +90,7 @@ func (j *JWKClient) GetKey(ID string) (jose.JSONWebKey, error) {
 }
 
 func (j *JWKClient) downloadKeys() ([]jose.JSONWebKey, error) {
+	fmt.Println("AUTH0 - Downloading keys")
 	req, err := http.NewRequest("GET", j.options.URI, new(bytes.Buffer))
 	if err != nil {
 		return []jose.JSONWebKey{}, err
