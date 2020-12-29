@@ -79,6 +79,7 @@ func newMemoryPersistentKeyCacher() KeyCacher {
 // Get obtains a key from the cache, and checks if the key is expired
 func (mkc *memoryKeyCacher) Get(keyID string) (*jose.JSONWebKey, error) {
 	searchKey, ok := mkc.entries[keyID]
+	fmt.Println("Memory cacher get - ", keyID , "found - ", ok)
 	if ok {
 		if mkc.maxKeyAge == MaxKeyAgeNoCheck || !mkc.keyIsExpired(keyID) {
 			return &searchKey.JSONWebKey, nil
