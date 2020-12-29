@@ -2,7 +2,6 @@ package auth0
 
 import (
 	"errors"
-	"fmt"
 	"github.com/devopsfaith/krakend/logging"
 	"gopkg.in/square/go-jose.v2/jwt"
 	"time"
@@ -79,7 +78,6 @@ func newMemoryPersistentKeyCacher() KeyCacher {
 // Get obtains a key from the cache, and checks if the key is expired
 func (mkc *memoryKeyCacher) Get(keyID string) (*jose.JSONWebKey, error) {
 	searchKey, ok := mkc.entries[keyID]
-	fmt.Println("Memory cacher get - ", keyID, "found - ", ok)
 	if ok {
 		if mkc.maxKeyAge == MaxKeyAgeNoCheck || !mkc.keyIsExpired(keyID) {
 			return &searchKey.JSONWebKey, nil
@@ -98,7 +96,6 @@ func (mkc *memoryKeyCacher) Add(keyID string, downloadedKeys []jose.JSONWebKey) 
 func (mkc *memoryKeyCacher) AddWithKeyGetter(keyID string, keyGetter KeyIDGetter, downloadedKeys []jose.JSONWebKey) (*jose.JSONWebKey, error) {
 	var addingKey jose.JSONWebKey
 	var addingKeyID string
-	fmt.Println("AUTH0 - adding key", keyID)
 	for _, key := range downloadedKeys {
 		cacheKey := keyGetter.JWKGet(&key)
 
@@ -106,7 +103,6 @@ func (mkc *memoryKeyCacher) AddWithKeyGetter(keyID string, keyGetter KeyIDGetter
 			addingKey = key
 			addingKeyID = cacheKey
 		}
-		fmt.Println("cache size - ", mkc.maxCacheSize)
 		if mkc.maxCacheSize == -1 {
 			mkc.entries[cacheKey] = keyCacherEntry{
 				addedAt:    time.Now(),
