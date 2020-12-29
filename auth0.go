@@ -7,7 +7,6 @@ import (
 
 	"gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
-	"github.com/devopsfaith/krakend/logging"
 )
 
 // SecretProvider will provide everything
@@ -68,20 +67,15 @@ func NewConfigurationTrustProvider(provider SecretProvider, audience []string, i
 type JWTValidator struct {
 	config    Configuration
 	extractor RequestTokenExtractor
-	logger logging.Logger
 }
 
 // NewValidator creates a new
 // validator with the provided configuration.
-func NewValidator(config Configuration, extractor RequestTokenExtractor, logger1 logging.Logger) *JWTValidator {
+func NewValidator(config Configuration, extractor RequestTokenExtractor) *JWTValidator {
 	if extractor == nil {
 		extractor = RequestTokenExtractorFunc(FromHeader)
 	}
-
-	if logger1 != nil {
-		logger1.Info("NETA: starting my own validator")
-	}
-	return &JWTValidator{config, extractor, logger1}
+	return &JWTValidator{config, extractor}
 }
 
 // ValidateRequest validates the token within
